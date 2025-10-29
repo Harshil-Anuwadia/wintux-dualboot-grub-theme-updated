@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Theme Preview](repo-pictures/preview.gif)
+![Theme Preview](repo-pictures/screenshot.png)
 
 **Beautiful fullscreen GRUB theme for dual-boot**  
 *One-command installation!*
@@ -16,10 +16,12 @@
 
 ## 🙏 Credits
 
-**Original Creator:** [AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
-**Artwork:** [ABOhiccups](https://www.pling.com/p/1497147)
+**Original Creator:** [@AlexanderKh](https://github.com/AlexanderKh) - [Original Repository](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
+**Artwork:** [@ABOhiccups](https://www.pling.com/u/abohiccups) - [View on Pling](https://www.pling.com/p/1497147)
 
-**My Contribution:** Made installation effortless with automated scripts and bug fixes.
+**Huge thanks to @AlexanderKh for creating this innovative fullscreen GRUB theme!**
+
+**My Contribution:** Enhanced with automated installation, bug fixes, and multi-distro support.
 
 ---
 
