@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Theme Preview](repo-pictures/screenshot.png)
+![Theme Preview](repo-pictures/preview.gif)
 
 **Beautiful fullscreen GRUB theme for dual-boot**  
 *One-command installation!*
