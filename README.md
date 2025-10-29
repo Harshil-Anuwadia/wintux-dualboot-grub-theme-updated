@@ -1,4 +1,4 @@
-## WinTux Dualboot Fullscreen GRUB Theme
+# WinTux Dualboot Fullscreen GRUB Theme
 
 
 
