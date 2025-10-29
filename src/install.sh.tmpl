@@ -1,0 +1,367 @@
+#! /usr/bin/env bash
+
+set -o errexit
+
+# Colors for better readability
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# Check if running as root or sudo
+if [ $(id -u) -ne 0 ]
+then
+  echo -e "${RED}${BOLD}Error:${NC} This script must be run as root or with sudo"
+  echo -e "Please run: ${CYAN}sudo ./install.sh${NC}"
+  exit 1
+fi
+
+THEME_DIR_NAME="${TMPL_THEME_DIR_NAME}"
+RESOLUTION="${TMPL_RESOLUTION}"
+DIST_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+CANCEL_INSTALLATION="❌ Cancel installation"
+DO_NOTHING="⏭️  Skip this step"
+PS3="$(echo -e ${CYAN}Enter your choice number:${NC} )"
+
+# Print banner
+echo -e "${BOLD}${BLUE}"
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║                                                            ║"
+echo "║         WinTux Dualboot Fullscreen GRUB Theme              ║"
+echo "║                    Installation Script                     ║"
+echo "║                                                            ║"
+echo "╚════════════════════════════════════════════════════════════╝"
+echo -e "${NC}"
+
+# Secure boot warning message
+echo -e "${YELLOW}${BOLD}⚠️  IMPORTANT - Secure Boot Warning${NC}"
+echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "If you have ${BOLD}Secure Boot enabled${NC}, this theme may not display correctly"
+echo -e "because custom fonts are not signed and will be ignored by GRUB."
+echo ""
+echo -e "${BOLD}Options to fix this:${NC}"
+echo -e "  1. ${GREEN}Disable Secure Boot${NC} in your BIOS/UEFI settings (recommended)"
+echo -e "  2. ${YELLOW}Re-sign your GRUB package${NC} with your own keys and enroll them"
+echo ""
+echo -e "For more details, see:"
+echo -e "${CYAN}https://bbs.archlinux.org/viewtopic.php?pid=2103579#p2103579${NC}"
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+read -p "Press Enter to continue with installation..."
+echo ""
+
+# Confirm GRUB resolution change
+CONFIRM_RESOLUTION_CHANGE="✅ Yes, set GRUB resolution to $RESOLUTION"
+echo -e "${BOLD}${GREEN}Step 1:${NC} ${BOLD}Set GRUB Resolution${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "This theme requires your GRUB display resolution to be: ${BOLD}${GREEN}$RESOLUTION${NC}"
+echo -e "We will modify ${CYAN}GRUB_GFXMODE${NC} in ${CYAN}/etc/default/grub${NC}"
+echo ""
+echo -e "${YELLOW}Note:${NC} Make sure this matches your monitor's native resolution"
+echo ""
+select confirm_resolution in "$CONFIRM_RESOLUTION_CHANGE" "$CANCEL_INSTALLATION"
+do
+  case "$confirm_resolution" in
+    *"Yes"*)
+      echo -e "${GREEN}✓ Resolution will be set to $RESOLUTION${NC}"
+      echo ""
+      break
+    ;;
+    *"Cancel"*)
+      echo -e "${RED}Installation cancelled by user${NC}"
+      exit 0
+    ;;
+  esac
+done
+
+# Choose installation folder
+LOCATION_BOOT="/boot/grub/themes"
+LOCATION_USR="/usr/share/grub/themes"
+echo -e "${BOLD}${GREEN}Step 2:${NC} ${BOLD}Choose Installation Location${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "Select where you want to install the theme:"
+echo ""
+echo -e "  ${BOLD}$LOCATION_BOOT${NC}"
+echo -e "    → Standard location, directly accessible by GRUB"
+echo ""
+echo -e "  ${BOLD}$LOCATION_USR${NC}"
+echo -e "    → System-wide themes location"
+echo ""
+select install_location in "$LOCATION_BOOT (recommended)" "$LOCATION_USR" "$CANCEL_INSTALLATION"
+do
+  case "$install_location" in
+    *"$LOCATION_BOOT"*)
+      install_location="$LOCATION_BOOT"
+      echo -e "${GREEN}✓ Installing to: $install_location${NC}"
+      echo ""
+      break
+    ;;
+    *"$LOCATION_USR"*)
+      install_location="$LOCATION_USR"
+      echo -e "${GREEN}✓ Installing to: $install_location${NC}"
+      echo ""
+      break
+    ;;
+    *"Cancel"*)
+      echo -e "${RED}Installation cancelled by user${NC}"
+      exit 0
+    ;;
+  esac
+done
+
+# Ask whether we disable memtest
+DISABLE_MEMTEST="✅ Yes, disable memtest86+ entry (recommended)"
+echo -e "${BOLD}${GREEN}Step 3:${NC} ${BOLD}Disable Memtest Entry${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "This theme doesn't include a custom screen for the ${CYAN}memtest86+${NC} entry."
+echo ""
+echo -e "${YELLOW}Recommendation:${NC} Disable it to keep your boot menu clean"
+echo -e "You can still boot memtest from other methods if needed."
+echo ""
+select disable_memtest_choice in "$DISABLE_MEMTEST" "$DO_NOTHING" "$CANCEL_INSTALLATION"
+do
+  case "$disable_memtest_choice" in
+    *"Yes"*)
+      echo -e "${GREEN}✓ Memtest will be disabled${NC}"
+      echo ""
+      break
+    ;;
+    *"Skip"*)
+      echo -e "${YELLOW}⏭️  Keeping memtest entry${NC}"
+      echo ""
+      break
+    ;;
+    *"Cancel"*)
+      echo -e "${RED}Installation cancelled by user${NC}"
+      exit 0
+    ;;
+  esac
+done
+
+# Confirm to patch 10_linux
+PATCH_10_LINUX="✅ Yes, patch it for custom 'Advanced Options' screen (recommended)"
+echo -e "${BOLD}${GREEN}Step 4:${NC} ${BOLD}Patch Linux Boot Entry Script${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "This theme includes a special custom screen for ${CYAN}'Advanced Options for Linux'${NC}."
+echo ""
+echo -e "${BOLD}What this does:${NC}"
+echo -e "  • Patches ${CYAN}/etc/grub.d/10_linux${NC} to add a CSS class"
+echo -e "  • Enables the custom 'Advanced Options' themed screen"
+echo -e "  • Creates a backup before making changes"
+echo ""
+echo -e "${YELLOW}If not patched:${NC} The Advanced Options menu will use a generic screen"
+echo ""
+select patch_10_linux_choice in "$PATCH_10_LINUX" "$DO_NOTHING" "$CANCEL_INSTALLATION"
+do
+  case "$patch_10_linux_choice" in
+    *"Yes"*)
+      echo -e "${GREEN}✓ Will patch /etc/grub.d/10_linux${NC}"
+      echo ""
+      break
+    ;;
+    *"Skip"*)
+      echo -e "${YELLOW}⏭️  Skipping Linux boot entry patch${NC}"
+      echo ""
+      break
+    ;;
+    *"Cancel"*)
+      echo -e "${RED}Installation cancelled by user${NC}"
+      exit 0
+    ;;
+  esac
+done
+
+# Confirm to patch 30_uefi-firmware
+PATCH_30_UEFI="✅ Yes, patch it for custom EFI screen (recommended)"
+echo -e "${BOLD}${GREEN}Step 5:${NC} ${BOLD}Patch UEFI Firmware Entry Script${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "This theme includes a special custom screen for ${CYAN}'UEFI Firmware Settings'${NC}."
+echo ""
+echo -e "${BOLD}What this does:${NC}"
+echo -e "  • Patches ${CYAN}/etc/grub.d/30_uefi-firmware${NC} to add a CSS class"
+echo -e "  • Enables the custom EFI-themed screen"
+echo -e "  • Creates a backup before making changes"
+echo ""
+echo -e "${YELLOW}If not patched:${NC} The UEFI Firmware entry will use a generic screen"
+echo ""
+select patch_30_uefi_choice in "$PATCH_30_UEFI" "$DO_NOTHING" "$CANCEL_INSTALLATION"
+do
+  case "$patch_30_uefi_choice" in
+    *"Yes"*)
+      echo -e "${GREEN}✓ Will patch /etc/grub.d/30_uefi-firmware${NC}"
+      echo ""
+      break
+    ;;
+    *"Skip"*)
+      echo -e "${YELLOW}⏭️  Skipping UEFI firmware entry patch${NC}"
+      echo ""
+      break
+    ;;
+    *"Cancel"*)
+      echo -e "${RED}Installation cancelled by user${NC}"
+      exit 0
+    ;;
+  esac
+done
+
+# Back up files to be modified
+echo -e "${BOLD}${CYAN}Creating backups...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+if [[ ! -f /etc/default/grub.wintux.bak ]]
+then
+  echo -e "  ${GREEN}✓${NC} Backing up ${CYAN}/etc/default/grub${NC}"
+  cp -an /etc/default/grub /etc/default/grub.wintux.bak
+else
+  echo -e "  ${YELLOW}ℹ${NC} Backup ${CYAN}/etc/default/grub.wintux.bak${NC} already exists"
+fi
+if [[ ${patch_10_linux_choice} == *"Yes"* ]]
+then
+  if [[ ! -f /etc/grub.d/wintux-backup/10_linux ]]
+  then
+    echo -e "  ${GREEN}✓${NC} Backing up ${CYAN}/etc/grub.d/10_linux${NC}"
+    mkdir -p /etc/grub.d/wintux-backup
+    cp -an /etc/grub.d/10_linux /etc/grub.d/wintux-backup/10_linux
+  else
+    echo -e "  ${YELLOW}ℹ${NC} Backup ${CYAN}/etc/grub.d/wintux-backup/10_linux${NC} already exists"
+  fi
+fi
+if [[ ${patch_30_uefi_choice} == *"Yes"* ]]
+then
+  if [[ ! -f /etc/grub.d/wintux-backup/30_uefi-firmware ]]
+  then
+    echo -e "  ${GREEN}✓${NC} Backing up ${CYAN}/etc/grub.d/30_uefi-firmware${NC}"
+    mkdir -p /etc/grub.d/wintux-backup
+    cp -an /etc/grub.d/30_uefi-firmware /etc/grub.d/wintux-backup/30_uefi-firmware
+  else
+    echo -e "  ${YELLOW}ℹ${NC} Backup ${CYAN}/etc/grub.d/wintux-backup/30_uefi-firmware${NC} already exists"
+  fi
+fi
+echo ""
+
+# Copy theme
+echo -e "${BOLD}${CYAN}Installing theme files...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "  ${GREEN}✓${NC} Copying theme to ${CYAN}$install_location${NC}"
+mkdir -p "$install_location"
+cp -ar --no-preserve=ownership "$DIST_DIR"/"$THEME_DIR_NAME" "$install_location"
+echo ""
+
+# Patch /etc/default/grub
+echo -e "${BOLD}${CYAN}Configuring GRUB...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "  ${GREEN}✓${NC} Updating ${CYAN}/etc/default/grub${NC}"
+
+if grep -q "^GRUB_GFXMODE=" /etc/default/grub
+then
+  sed -i "s|^GRUB_GFXMODE=.*|GRUB_GFXMODE=\""$RESOLUTION"\"|" /etc/default/grub
+else
+  echo "" >> /etc/default/grub
+  echo "GRUB_GFXMODE=\"$RESOLUTION\"" >> /etc/default/grub
+fi
+
+THEME_TXT="$install_location"/"$THEME_DIR_NAME"/theme.txt
+if grep -q "^GRUB_THEME=" /etc/default/grub
+then
+  ESCAPED_THEME_TXT=$(echo "$THEME_TXT" | sed 's|\/|\\\/|g')
+  sed -i "s|^GRUB_THEME=.*|GRUB_THEME=\"$ESCAPED_THEME_TXT\"|" /etc/default/grub
+else
+  echo "" >> /etc/default/grub
+  echo "GRUB_THEME=\"$THEME_TXT\"" >> /etc/default/grub
+fi
+
+if [[ ${disable_memtest_choice} == *"Yes"* ]]
+then
+  if grep -q "^GRUB_DISABLE_MEMTEST=" /etc/default/grub
+  then
+    sed -i "s|^GRUB_DISABLE_MEMTEST=.*|GRUB_DISABLE_MEMTEST=true|" /etc/default/grub
+  else
+    echo "" >> /etc/default/grub
+    echo "GRUB_DISABLE_MEMTEST=true" >> /etc/default/grub
+  fi
+  echo -e "  ${GREEN}✓${NC} Disabled memtest entry"
+fi
+echo ""
+
+# Patch 10_linux
+if [[ ${patch_10_linux_choice} == *"Yes"* ]]
+then
+  echo -e "${BOLD}${CYAN}Applying patches...${NC}"
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+  echo -e "  ${GREEN}✓${NC} Patching ${CYAN}/etc/grub.d/10_linux${NC}"
+  if ! grep -q '^SUBMENU_CLASS="--class gnu-linux-adv"' /etc/grub.d/10_linux
+  then
+sed -i '/CLASS="--class gnu-linux --class gnu --class os"/ a\
+SUBMENU_CLASS="--class gnu-linux-adv"
+' /etc/grub.d/10_linux
+  fi
+  sed -i 's|\(echo "submenu '"'"'$(.*)'"'"' \).*\(\\$menuentry_id_option.*\)|\1${SUBMENU_CLASS} \2|' /etc/grub.d/10_linux
+fi
+
+# Patch 30_uefi-firmware
+if [[ ${patch_30_uefi_choice} == *"Yes"* ]]
+then
+  if [[ ${patch_10_linux_choice} != *"Yes"* ]]
+  then
+    echo -e "${BOLD}${CYAN}Applying patches...${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+  fi
+  echo -e "  ${GREEN}✓${NC} Patching ${CYAN}/etc/grub.d/30_uefi-firmware${NC}"
+  sed -i 's|\(menuentry '"'"'$LABEL'"'"' \).*\(\\$menuentry_id_option.*\)|\1--class efi \2|' /etc/grub.d/30_uefi-firmware
+fi
+
+if [[ ${patch_10_linux_choice} == *"Yes"* ]] || [[ ${patch_30_uefi_choice} == *"Yes"* ]]
+then
+  echo ""
+fi
+
+# update-grub
+echo -e "${BOLD}${CYAN}Regenerating GRUB configuration...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+if command -v update-grub &> /dev/null
+then
+  update-grub
+elif command -v grub-mkconfig &> /dev/null
+then
+  grub-mkconfig -o /boot/grub/grub.cfg
+else
+  echo -e "${RED}Error: Neither update-grub nor grub-mkconfig found${NC}"
+  exit 1
+fi
+
+echo ""
+echo -e "${GREEN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}${BOLD}✓ Installation completed successfully!${NC}"
+echo -e "${GREEN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "${BOLD}Next steps:${NC}"
+echo -e "  1. Reboot your computer"
+echo -e "  2. Your new GRUB theme should be active!"
+echo ""
+echo -e "${BOLD}Troubleshooting:${NC}"
+echo -e "  • If theme doesn't appear, check ${CYAN}/etc/default/grub${NC}"
+echo -e "  • Verify ${CYAN}GRUB_GFXMODE${NC} and ${CYAN}GRUB_THEME${NC} are set correctly"
+echo -e "  • Your backups are in ${CYAN}/etc/default/grub.wintux.bak${NC}"
+echo -e "    and ${CYAN}/etc/grub.d/wintux-backup/${NC}"
+echo ""
+echo -e "${BOLD}To restore original GRUB config:${NC}"
+echo -e "  ${CYAN}sudo cp /etc/default/grub.wintux.bak /etc/default/grub${NC}"
+echo -e "  ${CYAN}sudo cp /etc/grub.d/wintux-backup/* /etc/grub.d/${NC}"
+echo -e "  ${CYAN}sudo grub-mkconfig -o /boot/grub/grub.cfg${NC}"
+echo ""
+echo -e "${BOLD}Enjoy your new GRUB theme! 🎨${NC}"
+echo ""
