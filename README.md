@@ -1,4 +1,4 @@
-# 🎨 WinTux Dualboot Fullscreen GRUB Theme - Enhanced
+# WinTux Dualboot Fullscreen GRUB Theme - Enhanced
 
 <div align="center">
 
