@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 
-#═══════════════════════════════════════════════════════════════════════════════
-#  WinTux Dualboot Fullscreen GRUB Theme - Universal Installer
-#  Automated setup, build, and installation script
-#  Supports: Arch, Debian, Ubuntu, Fedora, openSUSE, and more
-#═══════════════════════════════════════════════════════════════════════════════
-
 set -e
 
-# Colors and styling
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
@@ -20,20 +13,14 @@ readonly BOLD='\033[1m'
 readonly DIM='\033[2m'
 readonly NC='\033[0m'
 
-# Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$SCRIPT_DIR/build"
 LOG_FILE="/tmp/wintux-installer-$(date +%Y%m%d-%H%M%S).log"
 
-# Default values
 AUTO_MODE=false
 SKIP_DEPS=false
 DETECTED_RESOLUTION=""
 DETECTED_SCALING="1"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# Utility Functions
-#═══════════════════════════════════════════════════════════════════════════════
 
 print_banner() {
     clear
@@ -135,10 +122,6 @@ check_root() {
     fi
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# System Detection
-#═══════════════════════════════════════════════════════════════════════════════
-
 detect_distribution() {
     log_step "Detecting Linux Distribution"
     
@@ -185,6 +168,26 @@ detect_package_manager() {
         PKG_INSTALL="zypper install -y"
         PKG_UPDATE="zypper refresh"
         log_success "Package Manager: ${BOLD}zypper${NC} (openSUSE-based)"
+    elif command -v apk &>/dev/null; then
+        PKG_MANAGER="apk"
+        PKG_INSTALL="apk add"
+        PKG_UPDATE="apk update"
+        log_success "Package Manager: ${BOLD}apk${NC} (Alpine-based)"
+    elif command -v xbps-install &>/dev/null; then
+        PKG_MANAGER="xbps"
+        PKG_INSTALL="xbps-install -y"
+        PKG_UPDATE="xbps-install -S"
+        log_success "Package Manager: ${BOLD}xbps${NC} (Void-based)"
+    elif command -v emerge &>/dev/null; then
+        PKG_MANAGER="emerge"
+        PKG_INSTALL="emerge"
+        PKG_UPDATE="emerge --sync"
+        log_success "Package Manager: ${BOLD}emerge${NC} (Gentoo-based)"
+    elif command -v eopkg &>/dev/null; then
+        PKG_MANAGER="eopkg"
+        PKG_INSTALL="eopkg install -y"
+        PKG_UPDATE="eopkg update-repo"
+        log_success "Package Manager: ${BOLD}eopkg${NC} (Solus-based)"
     else
         log_error "No supported package manager found"
         exit 1
@@ -196,7 +199,6 @@ detect_display_resolution() {
     
     local resolution=""
     
-    # Try xrandr first (X11)
     if command -v xrandr &>/dev/null && [[ -n "$DISPLAY" ]]; then
         resolution=$(xrandr 2>/dev/null | grep '\*' | awk '{print $1}' | head -1)
         if [[ -n "$resolution" ]]; then
@@ -206,7 +208,6 @@ detect_display_resolution() {
         fi
     fi
     
-    # Try wayland methods
     if command -v wlr-randr &>/dev/null; then
         resolution=$(wlr-randr 2>/dev/null | grep -oP '\d+x\d+' | head -1)
         if [[ -n "$resolution" ]]; then
@@ -216,7 +217,6 @@ detect_display_resolution() {
         fi
     fi
     
-    # Try reading from framebuffer
     if [[ -e /sys/class/graphics/fb0/virtual_size ]]; then
         local fb_size=$(cat /sys/class/graphics/fb0/virtual_size)
         resolution=$(echo "$fb_size" | sed 's/,/x/')
@@ -227,7 +227,6 @@ detect_display_resolution() {
         fi
     fi
     
-    # Common resolutions fallback
     log_warning "Could not auto-detect resolution"
     DETECTED_RESOLUTION=""
 }
@@ -237,7 +236,6 @@ detect_display_scaling() {
     
     local dpi=""
     
-    # Try to get DPI
     if command -v xdpyinfo &>/dev/null && [[ -n "$DISPLAY" ]]; then
         dpi=$(xdpyinfo 2>/dev/null | grep -oP 'resolution:\s+\K\d+' | head -1)
     fi
@@ -271,7 +269,6 @@ detect_boot_mode() {
         BOOT_MODE="UEFI"
         log_success "Boot Mode: ${BOLD}UEFI${NC}"
         
-        # Check secure boot status
         if command -v mokutil &>/dev/null; then
             if mokutil --sb-state 2>/dev/null | grep -q "SecureBoot enabled"; then
                 SECURE_BOOT="enabled"
@@ -291,35 +288,26 @@ detect_boot_mode() {
     fi
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# Dependency Management
-#═══════════════════════════════════════════════════════════════════════════════
-
 check_dependencies() {
     log_step "Checking Dependencies"
     
     local deps_missing=()
     local deps_needed=()
     
-    # Core dependencies
     local core_deps=("grub-mkfont" "envsubst" "awk" "sed")
     
-    # Check ImageMagick (magick or convert)
     if ! command -v magick &>/dev/null && ! command -v convert &>/dev/null; then
         deps_missing+=("ImageMagick")
     fi
     
-    # Check grub-mkfont
     if ! command -v grub-mkfont &>/dev/null; then
         deps_missing+=("grub")
     fi
     
-    # Check envsubst (part of gettext)
     if ! command -v envsubst &>/dev/null; then
         deps_missing+=("gettext")
     fi
     
-    # Optional but recommended
     if ! command -v zip &>/dev/null; then
         deps_needed+=("zip")
     fi
@@ -365,14 +353,26 @@ install_dependencies() {
             log_info "Installing: grub2 ImageMagick gettext-tools zip"
             $PKG_INSTALL grub2 ImageMagick gettext-tools zip 2>&1 | tee -a "$LOG_FILE"
             ;;
+        apk)
+            log_info "Installing: grub imagemagick gettext zip"
+            $PKG_INSTALL grub imagemagick gettext zip 2>&1 | tee -a "$LOG_FILE"
+            ;;
+        xbps)
+            log_info "Installing: grub ImageMagick gettext zip"
+            $PKG_INSTALL grub ImageMagick gettext zip 2>&1 | tee -a "$LOG_FILE"
+            ;;
+        emerge)
+            log_info "Installing: sys-boot/grub media-gfx/imagemagick sys-devel/gettext app-arch/zip"
+            $PKG_INSTALL sys-boot/grub media-gfx/imagemagick sys-devel/gettext app-arch/zip 2>&1 | tee -a "$LOG_FILE"
+            ;;
+        eopkg)
+            log_info "Installing: grub2 imagemagick gettext zip"
+            $PKG_INSTALL grub2 imagemagick gettext zip 2>&1 | tee -a "$LOG_FILE"
+            ;;
     esac
     
     log_success "Dependencies installed successfully"
 }
-
-#═══════════════════════════════════════════════════════════════════════════════
-# Configuration
-#═══════════════════════════════════════════════════════════════════════════════
 
 configure_resolution() {
     log_step "Configure Display Resolution"
@@ -478,7 +478,6 @@ configure_installation() {
         return
     fi
     
-    # Installation location
     echo ""
     echo -e "${BOLD}Installation Location:${NC}"
     echo -e "  ${CYAN}1)${NC} /boot/grub/themes ${GREEN}(recommended)${NC}"
@@ -492,21 +491,18 @@ configure_installation() {
         INSTALL_LOCATION="/usr/share/grub/themes"
     fi
     
-    # Memtest
     if prompt_yes_no "Disable memtest86+ entry in GRUB menu?" "y"; then
         DISABLE_MEMTEST="yes"
     else
         DISABLE_MEMTEST="no"
     fi
     
-    # Patch 10_linux
     if prompt_yes_no "Patch 10_linux for custom 'Advanced Options' screen?" "y"; then
         PATCH_10_LINUX="yes"
     else
         PATCH_10_LINUX="no"
     fi
     
-    # Patch 30_uefi-firmware
     if [[ "$BOOT_MODE" == "UEFI" ]]; then
         if prompt_yes_no "Patch 30_uefi-firmware for custom EFI screen?" "y"; then
             PATCH_30_UEFI="yes"
@@ -520,15 +516,34 @@ configure_installation() {
     log_success "Installation configured"
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# Build Theme
-#═══════════════════════════════════════════════════════════════════════════════
-
 build_theme() {
     log_step "Building Theme"
     
     cd "$SCRIPT_DIR"
-    
+
+    log_info "Checking ImageMagick compatibility..."
+    if ! command -v magick >/dev/null 2>&1; then
+        log_warning "'magick' command not found. Checking for 'convert' (ImageMagick 6)..."
+        if command -v convert >/dev/null 2>&1; then
+            log_info "ImageMagick 6 detected. Creating compatibility shim for 'magick' in /usr/local/bin..."
+            mkdir -p /usr/local/bin
+            ln -sf "$(command -v convert)" /usr/local/bin/magick
+            chmod +x /usr/local/bin/magick || true
+
+            if command -v magick >/dev/null 2>&1; then
+                log_success "Compatibility shim created successfully."
+            else
+                log_error "Failed to create magick compatibility link. Please install ImageMagick manually."
+                exit 1
+            fi
+        else
+            log_error "Neither 'magick' nor 'convert' found. Please install ImageMagick and rerun installer."
+            exit 1
+        fi
+    else
+        log_success "ImageMagick detected."
+    fi
+
     log_info "Building for resolution: ${BOLD}$SELECTED_RESOLUTION${NC}"
     log_info "Scaling factor: ${BOLD}${SELECTED_SCALING}x${NC}"
     
@@ -548,10 +563,6 @@ build_theme() {
     fi
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# Installation
-#═══════════════════════════════════════════════════════════════════════════════
-
 install_theme() {
     log_step "Installing Theme"
     
@@ -564,21 +575,17 @@ install_theme() {
         exit 1
     fi
     
-    # Create backup of /etc/default/grub
     if [[ ! -f /etc/default/grub.wintux.bak ]]; then
         log_info "Creating backup: /etc/default/grub.wintux.bak"
         cp -an /etc/default/grub /etc/default/grub.wintux.bak
     fi
     
-    # Copy theme files
     log_info "Copying theme to $INSTALL_LOCATION"
     mkdir -p "$INSTALL_LOCATION"
     cp -ar "$theme_build_dir/$theme_compliant_name" "$INSTALL_LOCATION/"
     
-    # Update /etc/default/grub
     log_info "Updating /etc/default/grub"
     
-    # Set GRUB_GFXMODE
     if grep -q "^GRUB_GFXMODE=" /etc/default/grub; then
         sed -i "s|^GRUB_GFXMODE=.*|GRUB_GFXMODE=\"$SELECTED_RESOLUTION\"|" /etc/default/grub
     else
@@ -586,7 +593,6 @@ install_theme() {
         echo "GRUB_GFXMODE=\"$SELECTED_RESOLUTION\"" >> /etc/default/grub
     fi
     
-    # Set GRUB_THEME
     local theme_txt="$INSTALL_LOCATION/$theme_compliant_name/theme.txt"
     if grep -q "^GRUB_THEME=" /etc/default/grub; then
         local escaped_theme_txt=$(echo "$theme_txt" | sed 's|\/|\\\/|g')
@@ -596,7 +602,6 @@ install_theme() {
         echo "GRUB_THEME=\"$theme_txt\"" >> /etc/default/grub
     fi
     
-    # Disable memtest
     if [[ "$DISABLE_MEMTEST" == "yes" ]]; then
         log_info "Disabling memtest86+ entry"
         if grep -q "^GRUB_DISABLE_MEMTEST=" /etc/default/grub; then
@@ -607,7 +612,6 @@ install_theme() {
         fi
     fi
     
-    # Patch 10_linux
     if [[ "$PATCH_10_LINUX" == "yes" ]]; then
         if [[ -f /etc/grub.d/10_linux ]]; then
             log_info "Patching /etc/grub.d/10_linux"
@@ -624,7 +628,6 @@ install_theme() {
         fi
     fi
     
-    # Patch 30_uefi-firmware
     if [[ "$PATCH_30_UEFI" == "yes" ]]; then
         if [[ -f /etc/grub.d/30_uefi-firmware ]]; then
             log_info "Patching /etc/grub.d/30_uefi-firmware"
@@ -638,7 +641,6 @@ install_theme() {
         fi
     fi
     
-    # Regenerate GRUB config
     log_info "Regenerating GRUB configuration"
     if command -v update-grub &>/dev/null; then
         update-grub 2>&1 | tee -a "$LOG_FILE"
@@ -653,10 +655,6 @@ install_theme() {
     
     log_success "Theme installed successfully"
 }
-
-#═══════════════════════════════════════════════════════════════════════════════
-# Main Installation Flow
-#═══════════════════════════════════════════════════════════════════════════════
 
 show_summary() {
     log_step "Installation Summary"
@@ -744,10 +742,6 @@ EOF
     exit 0
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# Argument Parsing
-#═══════════════════════════════════════════════════════════════════════════════
-
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -782,10 +776,6 @@ parse_arguments() {
     done
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# Main Function
-#═══════════════════════════════════════════════════════════════════════════════
-
 main() {
     parse_arguments "$@"
     
@@ -794,17 +784,14 @@ main() {
     log_info "Starting installation at $(date)"
     log_info "Log file: $LOG_FILE"
     
-    # Root check
     check_root
     
-    # System detection
     detect_distribution
     detect_package_manager
     detect_boot_mode
     detect_display_resolution
     detect_display_scaling
     
-    # Check and install dependencies
     if ! check_dependencies; then
         if prompt_yes_no "Install missing dependencies?" "y"; then
             install_dependencies
@@ -814,7 +801,6 @@ main() {
         fi
     fi
     
-    # Configuration
     if [[ -z "$SELECTED_RESOLUTION" ]]; then
         configure_resolution
     else
@@ -831,13 +817,11 @@ main() {
         configure_installation
     else
         log_info "Using specified location: ${BOLD}$INSTALL_LOCATION${NC}"
-        # Set defaults for auto mode
         DISABLE_MEMTEST="${DISABLE_MEMTEST:-yes}"
         PATCH_10_LINUX="${PATCH_10_LINUX:-yes}"
         PATCH_30_UEFI="${PATCH_30_UEFI:-yes}"
     fi
     
-    # Show summary and confirm
     show_summary
     
     if [[ "$AUTO_MODE" != "true" ]]; then
@@ -847,18 +831,12 @@ main() {
         fi
     fi
     
-    # Build and install
     build_theme
     install_theme
     
-    # Completion
     show_completion
     
     log_info "Installation completed at $(date)"
 }
-
-#═══════════════════════════════════════════════════════════════════════════════
-# Entry Point
-#═══════════════════════════════════════════════════════════════════════════════
 
 main "$@"
