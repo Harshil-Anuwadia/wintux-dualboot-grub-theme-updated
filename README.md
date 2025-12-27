@@ -57,10 +57,15 @@ sudo ./universal-installer.sh --skip-deps               # Skip dependency check
 
 ## 🙏 Credits
 
-**Original creator:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
+**Original theme:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
 **Artwork:** [@ABOhiccups](https://www.pling.com/p/1497147)
 
-This fork adds universal distro support, auto-detection, and fixes various build issues.
+**My open source contribution:**
+- Universal automated installer script (zero manual work)
+- Support for 9+ Linux distributions (Arch, Debian, Fedora, Alpine, Void, Gentoo, Solus, openSUSE, etc.)
+- Auto-detection (resolution, DPI, boot mode)
+- ImageMagick 6/7 compatibility layer
+- Bug fixes and stability improvements
 
 ---
 
