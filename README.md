@@ -2,7 +2,7 @@
 
 ![Theme Preview](repo-pictures/preview.gif)
 
-A clean, fullscreen GRUB theme for dual-boot systems. No more ugly boot menus.
+A clean, fullscreen GRUB theme for dual-boot systems. No more ugly boot menus—just a polished, modern interface that makes your system look as good at boot as it does after login.
 
 ---
 
@@ -37,18 +37,18 @@ If it has GRUB, it'll probably work.
 
 ## 🎨 Features
 
-- Auto-detects your screen resolution and DPI
-- Handles ImageMagick 6 & 7 automatically (no more "magick not found" errors)
-- Custom icons for Windows, Linux, and advanced boot options
-- UEFI and BIOS support
-- Multiple scaling options (1080p, 2K, 4K)
+- **Smart auto-detection** — screen resolution, DPI, and boot mode (UEFI/BIOS)
+- **ImageMagick 6 & 7 compatibility** — no more "magick not found" errors
+- **Custom icons** for Windows, Linux, and advanced boot options
+- **Multiple scaling options** — 1080p, 2K, 4K native support
+- **Zero manual configuration** — just run the installer and reboot
 
 ---
 
 ## 🛠️ Manual Options
 
 ```bash
-sudo ./universal-installer.sh --auto                    # Full auto
+sudo ./universal-installer.sh --auto                    # Full auto mode
 sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # Custom resolution/scaling
 sudo ./universal-installer.sh --skip-deps               # Skip dependency check
 ```
@@ -69,6 +69,20 @@ sudo ./universal-installer.sh --skip-deps               # Skip dependency check
 
 ---
 
+## 💖 Support This Project
+
+If this theme made your dual-boot setup look incredible, consider:
+
+- ⭐ **Starring this repo** — it helps others discover it
+- 🐛 **Reporting bugs** or **suggesting features** via [Issues](../../issues)
+- 🔀 **Contributing** — PRs welcome for new distros, fixes, or improvements
+
+---
+
 ## 📝 License
 
 See [LICENSE](LICENSE)
+
+---
+
+**Got issues?** Check the [Issues](../../issues) page or open a new one. I'm actively maintaining this fork.
