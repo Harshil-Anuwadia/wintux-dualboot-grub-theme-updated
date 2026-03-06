@@ -85,4 +85,4 @@ See [LICENSE](LICENSE)
 
 ---
 
-**Got issues?** Check the [Issues](../../issues) page or open a new one. I'm actively maintaining this fork.
+**Got issues?** Check the [Issues](../../issues) page or open a new one. I'm actively maintaining this.
