@@ -2,87 +2,90 @@
 
 ![Theme Preview](repo-pictures/preview.gif)
 
-A clean, fullscreen GRUB theme for dual-boot systems. No more ugly boot menus—just a polished, modern interface that makes your system look as good at boot as it does after login.
+Every time you boot up, make the choice.
+
+A fullscreen GRUB theme inspired by the Matrix - because choosing between Windows and Linux should look as cool as it feels. No more staring at that ugly default boot menu from 1995.
 
 ---
 
-## 🚀 Quick Install
+## Install
 
 ```bash
 sudo ./universal-installer.sh
 ```
 
-That's it. The script handles everything—detects your distro, installs dependencies, builds the theme, and configures GRUB.
+That's it. Script does everything - figures out your distro, installs what's needed, builds the theme, configures GRUB. Reboot and you're done.
 
-**Want auto-mode?** Add `--auto` flag for zero interaction.
-
----
-
-## ✅ Supported Distros
-
-Works on pretty much everything:
-
-- **Arch Linux** (pacman)
-- **Ubuntu / Debian / Mint** (apt)
-- **Fedora / CentOS** (dnf/yum)
-- **openSUSE** (zypper)
-- **Alpine** (apk)
-- **Void Linux** (xbps)
-- **Gentoo** (emerge)
-- **Solus** (eopkg)
-
-If it has GRUB, it'll probably work.
+Add `--auto` if you want zero prompts.
 
 ---
 
-## 🎨 Features
+## Works On
 
-- **Smart auto-detection** — screen resolution, DPI, and boot mode (UEFI/BIOS)
-- **ImageMagick 6 & 7 compatibility** — no more "magick not found" errors
-- **Custom icons** for Windows, Linux, and advanced boot options
-- **Multiple scaling options** — 1080p, 2K, 4K native support
-- **Zero manual configuration** — just run the installer and reboot
+Tested on basically everything with GRUB:
+
+- Arch Linux
+- Ubuntu / Debian / Mint
+- Fedora / CentOS
+- openSUSE
+- Alpine
+- Void Linux
+- Gentoo
+- Solus
+
+If your distro has GRUB, it'll probably work. Let me know if it doesn't.
 
 ---
 
-## 🛠️ Manual Options
+## What It Does
+
+- Auto-detects your screen resolution and DPI
+- Handles both ImageMagick 6 and 7 (no more version conflicts)
+- Custom icons for Windows, Linux, and advanced options
+- Scales properly on 1080p, 2K, and 4K displays
+- Works with both UEFI and BIOS
+- Zero manual config needed
+
+---
+
+## Custom Install Options
 
 ```bash
-sudo ./universal-installer.sh --auto                    # Full auto mode
-sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # Custom resolution/scaling
-sudo ./universal-installer.sh --skip-deps               # Skip dependency check
+sudo ./universal-installer.sh --auto                    # full auto, no questions
+sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # force resolution/scaling
+sudo ./universal-installer.sh --skip-deps               # skip dependency install
 ```
 
 ---
 
-## 🙏 Credits
+## Credits
 
-**Original theme:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
+**Original theme design:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
 **Artwork:** [@ABOhiccups](https://www.pling.com/p/1497147)
 
-**My open source contribution:**
-- Universal automated installer script (zero manual work)
-- Support for 9+ Linux distributions (Arch, Debian, Fedora, Alpine, Void, Gentoo, Solus, openSUSE, etc.)
-- Auto-detection (resolution, DPI, boot mode)
-- ImageMagick 6/7 compatibility layer
-- Bug fixes and stability improvements
+**What I added:**
+- Universal installer that actually works across distros
+- Auto-detection for resolution, DPI, boot mode
+- ImageMagick 6/7 compatibility fixes
+- Support for 9+ different Linux distributions
+- Various bug fixes and improvements
 
 ---
 
-## 💖 Support This Project
+## Help Out
 
-If this theme made your dual-boot setup look incredible, consider:
+If this made your boot menu not suck:
 
-- ⭐ **Starring this repo** — it helps others discover it
-- 🐛 **Reporting bugs** or **suggesting features** via [Issues](../../issues)
-- 🔀 **Contributing** — PRs welcome for new distros, fixes, or improvements
+- ⭐ Star the repo so others can find it
+- 🐛 Report bugs in [Issues](../../issues)
+- 🔀 Submit PRs for new distros or fixes
 
 ---
 
-## 📝 License
+## License
 
 See [LICENSE](LICENSE)
 
 ---
 
-**Got issues?** Check the [Issues](../../issues) page or open a new one. I'm actively maintaining this.
+**Something broke?** Check [Issues](../../issues) or open a new one. I try to respond pretty quick.
