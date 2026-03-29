@@ -1,14 +1,22 @@
 # WinTux Dualboot Fullscreen GRUB Theme
 
-![Theme Preview](repo-pictures/preview.gif)
+
 
 Every time you boot up, make the choice.
 
 A fullscreen GRUB theme inspired by the Matrix - because choosing between Windows and Linux should look as cool as it feels. No more staring at that ugly default boot menu from 1995.
 
----
+***
 
 ## Install
+
+Make the scripts executable (only needed once after cloning):
+
+```bash
+chmod u+x universal-installer.sh build.sh
+```
+
+Then run:
 
 ```bash
 sudo ./universal-installer.sh
@@ -18,7 +26,7 @@ That's it. Script does everything - figures out your distro, installs what's nee
 
 Add `--auto` if you want zero prompts.
 
----
+***
 
 ## Works On
 
@@ -35,7 +43,7 @@ Tested on basically everything with GRUB:
 
 If your distro has GRUB, it'll probably work. Let me know if it doesn't.
 
----
+***
 
 ## What It Does
 
@@ -46,7 +54,7 @@ If your distro has GRUB, it'll probably work. Let me know if it doesn't.
 - Works with both UEFI and BIOS
 - Zero manual config needed
 
----
+***
 
 ## Custom Install Options
 
@@ -56,7 +64,7 @@ sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # force resolution/scali
 sudo ./universal-installer.sh --skip-deps               # skip dependency install
 ```
 
----
+***
 
 ## Credits
 
@@ -70,7 +78,7 @@ sudo ./universal-installer.sh --skip-deps               # skip dependency instal
 - Support for 9+ different Linux distributions
 - Various bug fixes and improvements
 
----
+***
 
 ## Help Out
 
@@ -80,12 +88,12 @@ If this made your boot menu not suck:
 - 🐛 Report bugs in [Issues](../../issues)
 - 🔀 Submit PRs for new distros or fixes
 
----
+***
 
 ## License
 
 See [LICENSE](LICENSE)
 
----
+***
 
 **Something broke?** Check [Issues](../../issues) or open a new one. I try to respond pretty quick.
