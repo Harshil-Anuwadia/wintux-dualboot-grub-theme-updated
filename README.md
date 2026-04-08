@@ -1,7 +1,5 @@
 # WinTux Dualboot Fullscreen GRUB Theme
 
-![Theme Preview] (repo-pictures/ preview.gif)
-
 Every time you boot up, make the choice.
 
 A fullscreen GRUB theme inspired by the Matrix - because choosing between Windows and Linux should look as cool as it feels. No more staring at that ugly default boot menu from 1995.
