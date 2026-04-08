@@ -1,4 +1,5 @@
 # WinTux Dualboot Fullscreen GRUB Theme
+![WinTux GRUB Theme Preview](repo-pictures/preview.gif)
 
 Every time you boot up, make the choice.
 
