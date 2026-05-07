@@ -94,8 +94,10 @@ prompt_choice() {
     shift
     local options=("$@")
     
+    PROMPT_RESULT=""
+
     if [[ "$AUTO_MODE" == "true" ]]; then
-        echo "1"
+        PROMPT_RESULT="1"
         return
     fi
     
@@ -107,7 +109,7 @@ prompt_choice() {
     while true; do
         read -p "$(echo -e "${CYAN}Enter your choice [1-${#options[@]}]:${NC} ")" choice
         if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#options[@]}" ]; then
-            echo "$choice"
+            PROMPT_RESULT="$choice"
             return
         fi
         echo -e "${RED}Invalid choice. Please try again.${NC}"
@@ -483,7 +485,8 @@ configure_installation() {
     echo -e "  ${CYAN}1)${NC} /boot/grub/themes ${GREEN}(recommended)${NC}"
     echo -e "  ${CYAN}2)${NC} /usr/share/grub/themes"
     echo ""
-    local loc_choice=$(prompt_choice "Choose installation location" "/boot/grub/themes (recommended)" "/usr/share/grub/themes")
+    prompt_choice "Choose installation location" "/boot/grub/themes (recommended)" "/usr/share/grub/themes"
+    local loc_choice="$PROMPT_RESULT"
     
     if [[ "$loc_choice" == "1" ]]; then
         INSTALL_LOCATION="/boot/grub/themes"
