@@ -96,3 +96,13 @@ See [LICENSE](LICENSE)
 ***
 
 **Something broke?** Check [Issues](../../issues) or open a new one. I try to respond pretty quick.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=Harshil-Anuwadia%2Fwintux-dualboot-grub-theme-updated&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated&type=date&legend=top-left" />
+ </picture>
+</a>
