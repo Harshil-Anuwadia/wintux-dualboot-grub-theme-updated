@@ -44,6 +44,24 @@ sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # force resolution/scali
 sudo ./universal-installer.sh --skip-deps               # skip dependency install
 ```
 ***
+## Contributors
+
+Thanks to everyone who has contributed to this project!
+
+[![Contributors](https://contrib.rocks/image?repo=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated)](https://github.com/Harshil-Anuwadia/wintux-dualboot-grub-theme-updated/graphs/contributors)
+
+***
+## 💖 Sponsors
+
+Maintenance of this project is made possible by all the contributors and sponsors. Thank you for your support!
+
+If you find this project useful, consider [sponsoring me on GitHub](https://github.com/sponsors/Harshil-Anuwadia) — it helps keep this and other projects alive. Every contribution, big or small, is deeply appreciated.
+
+<a href="https://github.com/bijellj"><img src="https://github.com/bijellj.png?size=50" width="50px" alt="bijellj" /></a>
+
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/Harshil-Anuwadia?style=for-the-badge&logo=linux&logoColor=white&label=Current%20Sponsors&color=pink)](https://github.com/sponsors/Harshil-Anuwadia)
+
+***
 ## Credits
 **Original theme design:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
 **Artwork:** [@ABOhiccups](https://www.pling.com/p/1497147)
@@ -60,24 +78,6 @@ If this made your boot menu not suck:
 - ⭐ Star the repo so others can find it
 - 🐛 Report bugs in [Issues](../../issues)
 - 🔀 Submit PRs for new distros or fixes
-***
-## Contributors
-
-Thanks to everyone who has contributed to this project!
-
-[![Contributors](https://contrib.rocks/image?repo=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated)](https://github.com/Harshil-Anuwadia/wintux-dualboot-grub-theme-updated/graphs/contributors)
-
-***
-## 💖 Sponsors
-
-Maintenance of this project is made possible by all the contributors and sponsors. Thank you for your support!
-
-If you find this project useful, consider [sponsoring me on GitHub](https://github.com/sponsors/Harshil-Anuwadia) — it helps keep this and other projects alive. Every contribution, big or small, is deeply appreciated. 🙏
-
-<a href="https://github.com/bijellj"><img src="https://github.com/bijellj.png?size=50" width="50px" alt="bijellj" /></a>
-
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/Harshil-Anuwadia?style=for-the-badge&logo=linux&logoColor=white&label=Current%20Sponsors&color=pink)](https://github.com/sponsors/Harshil-Anuwadia)
-
 ***
 ## License
 See [LICENSE](LICENSE)
