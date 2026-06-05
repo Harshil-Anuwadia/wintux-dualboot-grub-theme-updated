@@ -65,11 +65,11 @@ If this made your boot menu not suck:
 
 Maintenance of this project is made possible by all the contributors and sponsors. Thank you for your support!
 
-If you find this project useful, consider [sponsoring me on GitHub](https://github.com/sponsors/Harshil-Anuwadia) — it helps keep this and other projects alive. Every contribution, big or small, is deeply appreciated. 🙏
+If you find this project useful, consider [sponsoring me on GitHub](https://github.com/sponsors/Harshil-Anuwadia) — it helps keep this and other projects alive. Every contribution, big or small, is deeply appreciated.
 
 <a href="https://github.com/bijellj"><img src="https://github.com/bijellj.png?size=50" width="50px" alt="bijellj" /></a>
 
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/Harshil-Anuwadia?style=for-the-badge&logo=github-sponsors&logoColor=white&label=Current%20Sponsors&color=pink)](https://github.com/sponsors/Harshil-Anuwadia)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/Harshil-Anuwadia?style=for-the-badge&logo=linux&logoColor=white&label=Current%20Sponsors&color=pink)](https://github.com/sponsors/Harshil-Anuwadia)
 
 ***
 ## License
