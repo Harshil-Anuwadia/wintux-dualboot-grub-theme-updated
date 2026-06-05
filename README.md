@@ -1,36 +1,23 @@
 # WinTux Dualboot Fullscreen GRUB Theme
 ![WinTux GRUB Theme Preview](repo-pictures/preview.gif)
-
 Every time you boot up, make the choice.
-
 A fullscreen GRUB theme inspired by the Matrix - because choosing between Windows and Linux should look as cool as it feels. No more staring at that ugly default boot menu from 1995.
-
 ***
-
 ## Install
-
 Make the scripts executable (only needed once after cloning):
-
 ```bash
 chmod u+x universal-installer.sh build.sh
 ```
-
 Then run:
-
 ```bash
 sudo ./universal-installer.sh
 ```
-
 That's it. Script does everything - figures out your distro, installs what's needed, builds the theme, configures GRUB. Reboot and you're done.
 
 Add `--auto` if you want zero prompts.
-
 ***
-
 ## Works On
-
 Tested on basically everything with GRUB:
-
 - Arch Linux
 - Ubuntu / Debian / Mint
 - Fedora / CentOS
@@ -41,32 +28,23 @@ Tested on basically everything with GRUB:
 - Solus
 
 If your distro has GRUB, it'll probably work. Let me know if it doesn't.
-
 ***
-
 ## What It Does
-
 - Auto-detects your screen resolution and DPI
 - Handles both ImageMagick 6 and 7 (no more version conflicts)
 - Custom icons for Windows, Linux, and advanced options
 - Scales properly on 1080p, 2K, and 4K displays
 - Works with both UEFI and BIOS
 - Zero manual config needed
-
 ***
-
 ## Custom Install Options
-
 ```bash
 sudo ./universal-installer.sh --auto                    # full auto, no questions
 sudo ./universal-installer.sh -r 2560x1440 -s 1.5       # force resolution/scaling
 sudo ./universal-installer.sh --skip-deps               # skip dependency install
 ```
-
 ***
-
 ## Credits
-
 **Original theme design:** [@AlexanderKh](https://github.com/AlexanderKh/wintux-dualboot-fullscreen-grub-theme)  
 **Artwork:** [@ABOhiccups](https://www.pling.com/p/1497147)
 
@@ -76,29 +54,29 @@ sudo ./universal-installer.sh --skip-deps               # skip dependency instal
 - ImageMagick 6/7 compatibility fixes
 - Support for 9+ different Linux distributions
 - Various bug fixes and improvements
-
 ***
-
 ## Help Out
-
 If this made your boot menu not suck:
-
 - ⭐ Star the repo so others can find it
 - 🐛 Report bugs in [Issues](../../issues)
 - 🔀 Submit PRs for new distros or fixes
+***
+## 💖 Sponsors
+
+Maintenance of this project is made possible by all the contributors and sponsors. Thank you for your support!
+
+If you find this project useful, consider [sponsoring me on GitHub](https://github.com/sponsors/Harshil-Anuwadia) — it helps keep this and other projects alive. Every contribution, big or small, is deeply appreciated. 🙏
+
+<a href="https://github.com/bijellj"><img src="https://github.com/bijellj.png?size=50" width="50px" alt="bijellj" /></a>
+
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/Harshil-Anuwadia?style=for-the-badge&logo=github-sponsors&logoColor=white&label=Current%20Sponsors&color=pink)](https://github.com/sponsors/Harshil-Anuwadia)
 
 ***
-
 ## License
-
 See [LICENSE](LICENSE)
-
 ***
-
 **Something broke?** Check [Issues](../../issues) or open a new one. I try to respond pretty quick.
-
 ## Star History
-
 <a href="https://www.star-history.com/?repos=Harshil-Anuwadia%2Fwintux-dualboot-grub-theme-updated&type=date&legend=top-left">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Harshil-Anuwadia/wintux-dualboot-grub-theme-updated&type=date&theme=dark&legend=top-left" />
